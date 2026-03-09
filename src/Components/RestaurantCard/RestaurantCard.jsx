@@ -1,7 +1,9 @@
 import { useState } from "react";
+import { useCart } from "../../Context/CartContext";
 
 export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
   const [liked, setLiked] = useState(false);
+  const { addToCart } = useCart();
 
   return (
     <div
@@ -9,7 +11,6 @@ export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
       className="group bg-white rounded-3xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
     >
 
-      {/* Image */}
       <div className="relative overflow-hidden">
 
         <img
@@ -18,12 +19,10 @@ export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
           className="h-56 w-full object-cover group-hover:scale-110 transition duration-500"
         />
 
-        {/* Offer */}
         <div className="absolute top-3 left-3 bg-orange-500 text-white text-xs font-semibold px-3 py-1 rounded-full shadow">
           20% OFF
         </div>
 
-        {/* Heart */}
         <button
           onClick={(e) => {
             e.stopPropagation();
@@ -34,14 +33,11 @@ export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
           {liked ? "❤️" : "🤍"}
         </button>
 
-        {/* Delivery */}
         <div className="absolute bottom-3 left-3 bg-white px-3 py-1 rounded-full text-xs font-medium shadow">
           ⚡ {restaurant.time}
         </div>
-
       </div>
 
-      {/* Content */}
       <div className="p-5">
 
         <div className="flex justify-between items-start">
@@ -59,7 +55,6 @@ export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
           <div className="bg-green-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">
             ⭐ {restaurant.rating}
           </div>
-
         </div>
 
         <div className="mt-4 flex justify-between text-sm text-gray-500">
@@ -67,8 +62,14 @@ export default function RestaurantCard({ restaurant, setSelectedRestaurant }) {
           <span>Free Delivery</span>
         </div>
 
-        <button className="mt-5 w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-2xl font-medium transition">
-          Order Now
+        <button
+          onClick={(e) => {
+            e.stopPropagation();
+            addToCart(restaurant);
+          }}
+          className="mt-5 w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-2xl font-medium transition"
+        >
+          Add to Cart
         </button>
 
       </div>

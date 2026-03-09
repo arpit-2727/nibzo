@@ -1,24 +1,25 @@
 import { useState, useEffect, useRef } from "react";
 import CartDrawer from "../Cart/CartDrawer";
+import { useCart } from "../../Context/CartContext";
 
 export default function Navbar() {
   const [searchOpen, setSearchOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [cartCount] = useState(3);
   const [cartOpen, setCartOpen] = useState(false);
 
   const profileRef = useRef(null);
+  const { cartItems } = useCart();
 
-  // Scroll shadow
+  const totalCount = cartItems.reduce((acc, item) => acc + item.qty, 0);
+
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Outside click close profile dropdown
   useEffect(() => {
     const handler = (e) => {
       if (profileRef.current && !profileRef.current.contains(e.target)) {
@@ -27,44 +28,49 @@ export default function Navbar() {
     };
 
     document.addEventListener("mousedown", handler);
-
     return () => document.removeEventListener("mousedown", handler);
   }, []);
 
   return (
     <>
       <header
-        className={`sticky top-0 z-50 border-b backdrop-blur-xl transition-all duration-300 bg-white/90 border-gray-100 ${
-          scrolled ? "shadow-lg shadow-black/5" : ""
+        className={`sticky top-0 z-50 transition-all duration-300 backdrop-blur-xl border-b ${
+          scrolled
+            ? "bg-white/85 shadow-lg shadow-black/5 border-gray-200"
+            : "bg-white/70 border-transparent"
         }`}
       >
-        <div className="max-w-[1440px] mx-auto px-5 md:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto px-5 md:px-8 h-[72px] flex items-center justify-between">
 
           {/* Logo */}
-          <div className="flex items-center gap-3 cursor-pointer">
+          <div className="flex items-center gap-3 cursor-pointer group">
 
             <div className="relative">
-              <div className="w-11 h-11 rounded-2xl bg-orange-500 flex items-center justify-center shadow-md">
-                <span className="text-white font-bold text-lg">N</span>
+              <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-orange-500 to-orange-600 flex items-center justify-center shadow-md group-hover:scale-105 transition">
+                <span className="text-white font-bold text-xl">N</span>
               </div>
 
-              <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white"></span>
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
             </div>
 
             <div>
-              <h1 className="font-bold text-xl tracking-tight">Nibzo</h1>
-              <p className="text-xs text-gray-400">Modern Delivery</p>
+              <h1 className="font-bold text-[1.1rem] tracking-tight text-gray-900">
+                Nibzo
+              </h1>
+              <p className="text-[11px] text-gray-400 tracking-wide">
+                Modern Delivery
+              </p>
             </div>
           </div>
 
           {/* Desktop Nav */}
-          <nav className="hidden lg:flex gap-8 text-sm font-semibold">
+          <nav className="hidden lg:flex items-center gap-8 text-sm font-semibold">
 
             {["Home", "Restaurants", "Trending", "Offers"].map((item, i) => (
               <a
                 key={item}
                 href="#"
-                className={`relative hover:text-orange-500 transition ${
+                className={`relative transition hover:text-orange-500 ${
                   i === 0 ? "text-orange-500" : "text-gray-700"
                 }`}
               >
@@ -74,54 +80,60 @@ export default function Navbar() {
 
           </nav>
 
-          {/* Right Section */}
+          {/* Right Side */}
           <div className="flex items-center gap-2">
 
             {/* Search */}
             <div
               className={`transition-all duration-300 overflow-hidden ${
-                searchOpen ? "w-52" : "w-10"
+                searchOpen ? "w-56" : "w-11"
               }`}
             >
               {searchOpen ? (
                 <div className="relative">
 
-                  <span className="absolute left-3 top-2 text-gray-400">
+                  <span className="absolute left-3 top-2.5 text-gray-400">
                     🔍
                   </span>
 
                   <input
                     autoFocus
                     onBlur={() => setSearchOpen(false)}
-                    placeholder="Search food..."
-                    className="w-full pl-9 pr-3 h-10 rounded-xl border outline-none text-sm bg-white text-gray-900 border-gray-200"
+                    placeholder="Search restaurants..."
+                    className="w-full pl-9 pr-3 h-11 rounded-2xl border outline-none text-sm border-gray-200 bg-white shadow-sm"
                   />
                 </div>
               ) : (
                 <button
                   onClick={() => setSearchOpen(true)}
-                  className="w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+                  className="w-11 h-11 rounded-2xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition"
                 >
                   🔍
                 </button>
               )}
             </div>
 
-            {/* AI Pick */}
-            <button className="hidden sm:flex px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-500 text-white text-sm font-semibold shadow-md">
-              ✨ AI Pick
+            {/* AI Button */}
+            <button className="hidden sm:flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-violet-600 to-purple-500 text-white text-sm font-semibold shadow-md hover:scale-[1.03] transition">
+
+              <span>✨</span>
+              <span>AI Pick</span>
+
             </button>
 
             {/* Cart */}
             <button
               onClick={() => setCartOpen(true)}
-              className="relative w-10 h-10 rounded-xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center"
+              className="relative w-11 h-11 rounded-2xl bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition"
             >
               🛒
 
-              <span className="absolute -top-1.5 -right-1.5 bg-orange-500 text-white text-[10px] px-1.5 rounded-full animate-pulse">
-                {cartCount}
-              </span>
+              {totalCount > 0 && (
+                <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 bg-orange-500 text-white text-[10px] rounded-full flex items-center justify-center shadow animate-pulse">
+                  {totalCount}
+                </span>
+              )}
+
             </button>
 
             {/* Profile */}
@@ -129,39 +141,41 @@ export default function Navbar() {
 
               <button
                 onClick={() => setProfileOpen(!profileOpen)}
-                className="w-10 h-10 rounded-xl bg-orange-500 text-white font-bold"
+                className="w-11 h-11 rounded-2xl bg-orange-500 text-white font-bold shadow hover:scale-105 transition"
               >
                 A
               </button>
 
               {profileOpen && (
-                <div className="absolute right-0 mt-2 w-44 rounded-2xl py-2 border bg-white border-gray-100 shadow-xl">
+                <div className="absolute right-0 mt-3 w-48 rounded-2xl bg-white border border-gray-100 shadow-2xl overflow-hidden">
 
-                  <button className="block w-full text-left px-4 py-2 hover:bg-gray-50">
-                    👤 Profile
-                  </button>
-
-                  <button className="block w-full text-left px-4 py-2 hover:bg-gray-50">
-                    📦 Orders
-                  </button>
-
-                  <button className="block w-full text-left px-4 py-2 hover:bg-gray-50">
-                    ❤️ Saved
-                  </button>
-
-                  <button className="block w-full text-left px-4 py-2 hover:bg-red-50 text-red-500">
-                    🚪 Logout
-                  </button>
+                  {[
+                    "👤 Profile",
+                    "📦 Orders",
+                    "❤️ Saved",
+                    "🚪 Logout",
+                  ].map((item, i) => (
+                    <button
+                      key={item}
+                      className={`block w-full text-left px-4 py-3 text-sm transition ${
+                        i === 3
+                          ? "text-red-500 hover:bg-red-50"
+                          : "hover:bg-gray-50"
+                      }`}
+                    >
+                      {item}
+                    </button>
+                  ))}
 
                 </div>
               )}
 
             </div>
 
-            {/* Mobile Menu */}
+            {/* Mobile */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center"
+              className="lg:hidden w-11 h-11 rounded-2xl bg-gray-100 flex items-center justify-center"
             >
               ☰
             </button>
@@ -171,19 +185,19 @@ export default function Navbar() {
 
         {/* Mobile Nav */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t px-5 py-4 flex flex-col gap-2 bg-white border-gray-100">
+          <div className="lg:hidden px-5 py-4 border-t bg-white border-gray-100 flex flex-col gap-2">
 
             {["Home", "Restaurants", "Trending", "Offers"].map((item) => (
               <a
                 key={item}
                 href="#"
-                className="px-3 py-2 rounded-xl hover:bg-gray-50"
+                className="px-4 py-3 rounded-xl hover:bg-gray-50"
               >
                 {item}
               </a>
             ))}
 
-            <button className="mt-2 px-4 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-purple-500 text-white text-sm font-semibold">
+            <button className="mt-2 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-600 to-purple-500 text-white font-medium">
               ✨ AI Pick
             </button>
 
@@ -191,7 +205,6 @@ export default function Navbar() {
         )}
       </header>
 
-      {/* Cart Drawer */}
       <CartDrawer cartOpen={cartOpen} setCartOpen={setCartOpen} />
     </>
   );
