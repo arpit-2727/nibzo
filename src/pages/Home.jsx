@@ -1,10 +1,10 @@
 import Navbar from "../Components/Navbar/Navbar";
-import Hero from "../components/Hero/Hero";
-import SearchBar from "../components/SearchBar/SearchBar";
-import RestaurantList from "../components/RestaurantList/RestaurantList";
-import Features from "../components/Features/Features";
-import Footer from "../components/Footer/Footer";
-import AISuggestion from "../components/AISuggestion/AISuggestion";
+import Hero from "../Components/Hero/Hero";
+import SearchBar from "../Components/SearchBar/SearchBar";
+import RestaurantList from "../Components/RestaurantList/RestaurantList";
+import Features from "../Components/Features/Features";
+import Footer from "../Components/Footer/Footer";
+import AISuggestion from "../Components/AISuggestion/AISuggestion";
 export default function Home() {
   return (
     <>
